@@ -1,0 +1,35 @@
+# .NET
+bin/
+obj/
+.vs/
+*.user
+*.suo
+
+# Node.js
+node_modules/
+npm-debug.log*
+
+# Arquivos com senhas e informações sensíveis
+.env
+.env.*
+!.env.example
+secrets.json
+appsettings.Development.json
+
+# Certificados e chaves privadas
+*.pem
+*.key
+*.pfx
+
+# IDE
+.idea/
+.vscode/
+
+# Sistema operacional
+.DS_Store
+Thumbs.db
+
+# Logs e temporários
+*.log
+*.tmp
+*.bak
