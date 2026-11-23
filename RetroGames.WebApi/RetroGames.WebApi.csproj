@@ -7,12 +7,15 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="FluentValidation" Version="12.2.0" />
+    <PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="12.2.0" />
     <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="10.0.14" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\RetroGames.Services\RetroGames.Services.csproj" />
     <ProjectReference Include="..\RetroGames.WebApi.ApiModels\RetroGames.WebApi.ApiModels.csproj" />
+    <ProjectReference Include="..\RetroGames.Repository\RetroGames.Repository.csproj" />
   </ItemGroup>
 
 </Project>

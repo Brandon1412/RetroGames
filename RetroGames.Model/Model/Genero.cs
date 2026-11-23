@@ -1,3 +1,4 @@
+
 namespace RetroGames.Model.Model;
 
 /// <summary>Tabela tb_genero.</summary>
@@ -8,4 +9,10 @@ public class Genero
 
     /// <summary>Coluna no_genero.</summary>
     public string Nome { get; set; } = string.Empty;
+
+    /// <summary>Coluna ds_genero.</summary>
+    public string Descricao { get; set; } = string.Empty;
+
+    /// <summary>Coluna st_ativo.</summary>
+    public bool Ativo { get; set; } = true;
 }

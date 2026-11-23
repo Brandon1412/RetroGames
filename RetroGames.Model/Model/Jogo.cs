@@ -1,3 +1,4 @@
+
 namespace RetroGames.Model.Model;
 
 /// <summary>Tabela tb_jogo.</summary>
@@ -10,10 +11,7 @@ public class Jogo
     public string Nome { get; set; } = string.Empty;
 
     /// <summary>Coluna ds_jogo.</summary>
-    public string? Descricao { get; set; }
-
-    /// <summary>Coluna nu_ano_lancamento.</summary>
-    public int AnoLancamento { get; set; }
+    public string Descricao { get; set; } = string.Empty;
 
     /// <summary>Coluna vl_preco.</summary>
     public decimal Preco { get; set; }
@@ -22,7 +20,7 @@ public class Jogo
     public int Estoque { get; set; }
 
     /// <summary>Coluna st_ativo.</summary>
-    public bool Ativo { get; set; }
+    public bool Ativo { get; set; } = true;
 
     /// <summary>Coluna dt_cadastro.</summary>
     public DateTime DataCadastro { get; set; }
