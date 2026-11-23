@@ -1,5 +1,4 @@
-
-using FluentValidation;
+﻿using FluentValidation;
 using Microsoft.AspNetCore.Mvc;
 using RetroGames.Repository.Conexao;
 using RetroGames.Repository.Repositorios;
@@ -8,6 +7,7 @@ using RetroGames.WebApi.ApiModels.Respostas;
 using RetroGames.WebApi.Filtros;
 using RetroGames.WebApi.TratamentoErros;
 using RetroGames.WebApi.Validadores.Plataformas;
+using RetroGames.WebApi.Validadores.Jogos;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -22,9 +22,13 @@ builder.Services.AddSingleton(
 builder.Services.AddScoped<PlataformaRepository>();
 builder.Services.AddScoped<PlataformaService>();
 
+builder.Services.AddScoped<JogoRepository>();
+builder.Services.AddScoped<JogoService>();
+
 builder.Services.AddScoped<FluentValidationFilter>();
 
 builder.Services.AddValidatorsFromAssemblyContaining<PlataformaRequestValidator>();
+builder.Services.AddValidatorsFromAssemblyContaining<JogoRequestValidator>();
 
 builder.Services.AddProblemDetails();
 builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
@@ -68,9 +72,7 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-
 app.UseAuthorization();
-
 app.MapControllers();
 
 app.Run();

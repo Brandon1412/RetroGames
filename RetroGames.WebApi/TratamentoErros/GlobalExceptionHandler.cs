@@ -1,5 +1,4 @@
-
-using Microsoft.AspNetCore.Diagnostics;
+﻿using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using RetroGames.Services.Excecoes;
 using RetroGames.WebApi.ApiModels.Respostas;
@@ -10,8 +9,7 @@ public class GlobalExceptionHandler : IExceptionHandler
 {
     private readonly ILogger<GlobalExceptionHandler> _logger;
 
-    public GlobalExceptionHandler(
-        ILogger<GlobalExceptionHandler> logger)
+    public GlobalExceptionHandler(ILogger<GlobalExceptionHandler> logger)
     {
         _logger = logger;
     }
@@ -38,6 +36,11 @@ public class GlobalExceptionHandler : IExceptionHandler
                  ResponseCodes.PLATAFORMA_POSSUI_JOGOS,
                  exception.Message),
 
+            RelacionamentoNaoEncontradoException =>
+                (StatusCodes.Status404NotFound,
+                 ResponseCodes.RELACIONAMENTO_NAO_ENCONTRADO,
+                 exception.Message),
+
             _ =>
                 (StatusCodes.Status500InternalServerError,
                  ResponseCodes.ERRO_INTERNO,
@@ -52,12 +55,10 @@ public class GlobalExceptionHandler : IExceptionHandler
         httpContext.Response.StatusCode = statusCode;
 
         var resposta = ApiResponse<object>.Erro(
-            responseCode,
-            message);
+            responseCode, message);
 
         await httpContext.Response.WriteAsJsonAsync(
-            resposta,
-            cancellationToken);
+            resposta, cancellationToken);
 
         return true;
     }
