@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 
 using Microsoft.AspNetCore.Mvc;
 using RetroGames.Model.Model;
@@ -52,6 +53,7 @@ public class PlataformaController : ControllerBase
 
     // POST: api/Plataforma
     [HttpPost]
+    [Authorize(Policy = "SomenteAdministrador")]
     public async Task<IActionResult> Inserir(
         [FromBody] PlataformaRequest request)
     {
@@ -78,6 +80,7 @@ public class PlataformaController : ControllerBase
 
     // PUT: api/Plataforma/{id}
     [HttpPut("{id:int}")]
+    [Authorize(Policy = "SomenteAdministrador")]
     public async Task<IActionResult> Alterar(
         int id,
         [FromBody] PlataformaRequest request)
@@ -101,13 +104,14 @@ public class PlataformaController : ControllerBase
 
     // DELETE: api/Plataforma/{id}
     [HttpDelete("{id:int}")]
+    [Authorize(Policy = "SomenteAdministrador")]
     public async Task<IActionResult> Excluir(int id)
     {
         await _plataformaService.ExcluirAsync(id);
 
         return Ok(ApiResponse<object>.Sucesso(
             null,
-            "Plataforma excluída com sucesso."));
+            "Plataforma excluÃ­da com sucesso."));
     }
 
     private static PlataformaResponse ConverterParaResponse(

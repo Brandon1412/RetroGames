@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using RetroGames.Model.Model;
 using RetroGames.Services.Servicos;
 using RetroGames.WebApi.ApiModels.Jogos;
@@ -20,7 +21,11 @@ public class JogoController : ControllerBase
     [HttpGet]
     public async Task<IActionResult> Listar()
     {
+        var administrador = User.IsInRole("Administrador");
         var jogos = await _service.ListarAsync();
+
+        if (!administrador)
+            jogos = jogos.Where(j => j.Ativo).ToList();
 
         return Ok(ApiResponse<List<JogoResponse>>.Sucesso(
             jogos.Select(Converter).ToList(),
@@ -32,14 +37,21 @@ public class JogoController : ControllerBase
     {
         var jogo = await _service.ObterPorIdAsync(id);
 
+        if (!jogo.Ativo && !User.IsInRole("Administrador"))
+        {
+            return NotFound(ApiResponse<object>.Erro(
+                ResponseCodes.NAO_ENCONTRADO,
+                "Jogo não encontrado."));
+        }
+
         return Ok(ApiResponse<JogoResponse>.Sucesso(
             Converter(jogo),
             "Jogo consultado com sucesso."));
     }
 
     [HttpPost]
-    public async Task<IActionResult> Inserir(
-        [FromBody] JogoRequest request)
+    [Authorize(Policy = "SomenteAdministrador")]
+    public async Task<IActionResult> Inserir([FromBody] JogoRequest request)
     {
         var jogo = Converter(request);
         var id = await _service.InserirAsync(jogo);
@@ -54,6 +66,7 @@ public class JogoController : ControllerBase
     }
 
     [HttpPut("{id:int}")]
+    [Authorize(Policy = "SomenteAdministrador")]
     public async Task<IActionResult> Alterar(
         int id,
         [FromBody] JogoRequest request)
@@ -62,7 +75,6 @@ public class JogoController : ControllerBase
         jogo.Id = id;
 
         await _service.AlterarAsync(jogo);
-
         var atualizado = await _service.ObterPorIdAsync(id);
 
         return Ok(ApiResponse<JogoResponse>.Sucesso(
@@ -71,6 +83,7 @@ public class JogoController : ControllerBase
     }
 
     [HttpDelete("{id:int}")]
+    [Authorize(Policy = "SomenteAdministrador")]
     public async Task<IActionResult> Excluir(int id)
     {
         await _service.ExcluirAsync(id);
