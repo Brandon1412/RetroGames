@@ -1,5 +1,5 @@
-using Microsoft.AspNetCore.Authorization;
 
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using RetroGames.Model.Model;
 using RetroGames.Services.Servicos;
@@ -21,6 +21,7 @@ public class PlataformaController : ControllerBase
 
     // GET: api/Plataforma
     [HttpGet]
+    [AllowAnonymous]
     public async Task<IActionResult> Listar()
     {
         var plataformas = await _plataformaService.ListarAsync();
@@ -40,10 +41,10 @@ public class PlataformaController : ControllerBase
 
     // GET: api/Plataforma/{id}
     [HttpGet("{id:int}")]
+    [AllowAnonymous]
     public async Task<IActionResult> ObterPorId(int id)
     {
         var plataforma = await _plataformaService.ObterPorIdAsync(id);
-
         var resposta = ConverterParaResponse(plataforma);
 
         return Ok(ApiResponse<PlataformaResponse>.Sucesso(
@@ -65,7 +66,6 @@ public class PlataformaController : ControllerBase
         };
 
         var id = await _plataformaService.InserirAsync(plataforma);
-
         var cadastrada = await _plataformaService.ObterPorIdAsync(id);
 
         var resposta = ApiResponse<PlataformaResponse>.Sucesso(
@@ -94,7 +94,6 @@ public class PlataformaController : ControllerBase
         };
 
         await _plataformaService.AlterarAsync(plataforma);
-
         var atualizada = await _plataformaService.ObterPorIdAsync(id);
 
         return Ok(ApiResponse<PlataformaResponse>.Sucesso(
@@ -111,7 +110,7 @@ public class PlataformaController : ControllerBase
 
         return Ok(ApiResponse<object>.Sucesso(
             null,
-            "Plataforma excluÃ­da com sucesso."));
+            "Plataforma excluída com sucesso."));
     }
 
     private static PlataformaResponse ConverterParaResponse(

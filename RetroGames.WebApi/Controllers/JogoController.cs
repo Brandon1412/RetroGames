@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using RetroGames.Model.Model;
 using RetroGames.Services.Servicos;
@@ -19,6 +20,7 @@ public class JogoController : ControllerBase
     }
 
     [HttpGet]
+    [AllowAnonymous]
     public async Task<IActionResult> Listar()
     {
         var administrador = User.IsInRole("Administrador");
@@ -33,6 +35,7 @@ public class JogoController : ControllerBase
     }
 
     [HttpGet("{id:int}")]
+    [AllowAnonymous]
     public async Task<IActionResult> ObterPorId(int id)
     {
         var jogo = await _service.ObterPorIdAsync(id);
