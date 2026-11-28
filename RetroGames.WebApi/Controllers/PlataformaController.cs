@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using RetroGames.Model.Model;
 using RetroGames.Services.Servicos;
@@ -123,7 +123,8 @@ public class PlataformaController : ControllerBase
             AnoLancamento = plataforma.AnoLancamento,
             Categoria = plataforma.Categoria,
             Descricao = plataforma.Descricao,
-            Ativo = plataforma.Ativo
+            Ativo = plataforma.Ativo,
+            QuantidadeJogos = plataforma.QuantidadeJogos
         };
     }
 }

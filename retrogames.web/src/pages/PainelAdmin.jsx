@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom'
+﻿import { Link } from 'react-router-dom'
 
 function PainelAdmin() {
   return (
@@ -7,14 +7,14 @@ function PainelAdmin() {
         <h1>Painel administrativo</h1>
 
         <p>
-          Bem-vindo a area de administracao do RetroGames.
+          Bem-vindo à área de administração do RetroGames.
         </p>
 
         <div>
           <h2>Gerenciamento</h2>
 
           <p>
-            Selecione uma opcao para administrar o sistema.
+            Selecione uma opção para administrar o sistema.
           </p>
 
           <ul>
@@ -27,6 +27,18 @@ function PainelAdmin() {
             <li>
               <Link to="/admin/jogos">
                 Gerenciar jogos
+              </Link>
+            </li>
+
+            <li>
+              <Link to="/admin/administradores">
+                Gerenciar administradores
+              </Link>
+            </li>
+
+            <li>
+              <Link to="/admin/minha-senha">
+                Alterar minha senha
               </Link>
             </li>
           </ul>

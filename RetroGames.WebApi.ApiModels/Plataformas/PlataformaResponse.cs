@@ -1,4 +1,4 @@
-﻿namespace RetroGames.WebApi.ApiModels.Plataformas;
+namespace RetroGames.WebApi.ApiModels.Plataformas;
 
 public class PlataformaResponse
 {
@@ -15,4 +15,6 @@ public class PlataformaResponse
     public string? Descricao { get; set; }
 
     public bool Ativo { get; set; }
+
+    public int QuantidadeJogos { get; set; }
 }

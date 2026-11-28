@@ -1,4 +1,4 @@
-﻿using FluentValidation;
+using FluentValidation;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -30,6 +30,12 @@ builder.Services.AddScoped<PlataformaService>();
 
 builder.Services.AddScoped<JogoRepository>();
 builder.Services.AddScoped<JogoService>();
+
+builder.Services.AddScoped<GeneroRepository>();
+builder.Services.AddScoped<GeneroService>();
+
+builder.Services.AddScoped<CondicaoJogoRepository>();
+builder.Services.AddScoped<CondicaoJogoService>();
 
 builder.Services.AddScoped<UsuarioRepository>();
 builder.Services.AddScoped<AutenticacaoService>();

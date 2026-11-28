@@ -12,12 +12,6 @@ const categorias = [
 function GerenciarPlataformas() {
   const anoMinimo = 1972
   const anoAtual = new Date().getFullYear()
-  const [plataformas, setPlataformas] = useState([])
-  const [carregando, setCarregando] = useState(true)
-  const [salvando, setSalvando] = useState(false)
-  const [mensagemErro, setMensagemErro] = useState('')
-  const [mensagemSucesso, setMensagemSucesso] = useState('')
-  const [idEdicao, setIdEdicao] = useState(null)
 
   const formularioInicial = {
     nome: '',
@@ -28,7 +22,51 @@ function GerenciarPlataformas() {
     ativo: true,
   }
 
+  const filtrosIniciais = {
+    nome: '',
+    fabricante: '',
+    categoria: '',
+    situacao: '',
+    ordenacao: 'id-asc',
+  }
+
+  const [plataformas, setPlataformas] = useState([])
   const [formulario, setFormulario] = useState(formularioInicial)
+  const [filtros, setFiltros] = useState(filtrosIniciais)
+  const [carregando, setCarregando] = useState(true)
+  const [salvando, setSalvando] = useState(false)
+  const [mensagemErro, setMensagemErro] = useState('')
+  const [mensagemSucesso, setMensagemSucesso] = useState('')
+  const [idEdicao, setIdEdicao] = useState(null)
+
+  const estiloCampo = {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '8px',
+    marginBottom: '14px',
+  }
+
+  const estiloInput = {
+    width: '100%',
+    maxWidth: '100%',
+    boxSizing: 'border-box',
+    padding: '10px',
+  }
+
+  const estiloFiltro = {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '6px',
+    minWidth: '180px',
+    flex: '1 1 180px',
+  }
+
+  const estiloCelula = {
+    padding: '12px 10px',
+    textAlign: 'left',
+    verticalAlign: 'top',
+    overflowWrap: 'anywhere',
+  }
 
   async function carregarPlataformas() {
     try {
@@ -67,6 +105,19 @@ function GerenciarPlataformas() {
     }))
   }
 
+  function atualizarFiltro(evento) {
+    const { name, value } = evento.target
+
+    setFiltros((anterior) => ({
+      ...anterior,
+      [name]: value,
+    }))
+  }
+
+  function limparFiltros() {
+    setFiltros({ ...filtrosIniciais })
+  }
+
   function limparFormulario(limparMensagens = true) {
     setFormulario({ ...formularioInicial })
     setIdEdicao(null)
@@ -91,6 +142,7 @@ function GerenciarPlataformas() {
 
     setMensagemErro('')
     setMensagemSucesso('')
+    window.scrollTo({ top: 0, behavior: 'smooth' })
   }
 
   async function salvar(evento) {
@@ -98,6 +150,8 @@ function GerenciarPlataformas() {
 
     setMensagemErro('')
     setMensagemSucesso('')
+
+    const estavaEditando = idEdicao !== null
 
     if (!formulario.nome.trim()) {
       setMensagemErro('Informe o nome da plataforma.')
@@ -134,16 +188,20 @@ function GerenciarPlataformas() {
         ativo: formulario.ativo,
       }
 
-      if (idEdicao !== null) {
+      if (estavaEditando) {
         await plataformaApi.atualizar(idEdicao, dados)
-        setMensagemSucesso('Plataforma atualizada com sucesso.')
       } else {
         await plataformaApi.cadastrar(dados)
-        setMensagemSucesso('Plataforma cadastrada com sucesso.')
       }
 
       limparFormulario(false)
       await carregarPlataformas()
+
+      setMensagemSucesso(
+        estavaEditando
+          ? 'Plataforma atualizada com sucesso.'
+          : 'Plataforma cadastrada com sucesso.'
+      )
     } catch (erro) {
       setMensagemErro(
         erro.response?.data?.message ||
@@ -160,9 +218,7 @@ function GerenciarPlataformas() {
       `Deseja realmente excluir a plataforma ${plataforma.nome}?`
     )
 
-    if (!confirmar) {
-      return
-    }
+    if (!confirmar) return
 
     setMensagemErro('')
     setMensagemSucesso('')
@@ -174,8 +230,8 @@ function GerenciarPlataformas() {
         limparFormulario(false)
       }
 
-      setMensagemSucesso('Plataforma excluída com sucesso.')
       await carregarPlataformas()
+      setMensagemSucesso('Plataforma excluída com sucesso.')
     } catch (erro) {
       setMensagemErro(
         erro.response?.data?.message ||
@@ -191,34 +247,92 @@ function GerenciarPlataformas() {
       : 'Não informado'
   }
 
-  const estiloTabela = {
-    width: '100%',
-    minWidth: '1050px',
-    tableLayout: 'fixed',
-    borderCollapse: 'collapse',
-  }
+  const fabricantes = [
+    ...new Set(
+      plataformas
+        .map((plataforma) => plataforma.fabricante)
+        .filter((fabricante) => fabricante)
+    ),
+  ].sort((a, b) => a.localeCompare(b, 'pt-BR'))
 
-  const estiloCelula = {
-    padding: '12px 10px',
-    textAlign: 'left',
-    verticalAlign: 'top',
-    overflowWrap: 'anywhere',
-    wordBreak: 'normal',
-  }
+  const categoriasDisponiveis = [
+    ...new Set([
+      ...categorias,
+      ...plataformas
+        .map((plataforma) => plataforma.categoria)
+        .filter((categoria) => categoria),
+    ]),
+  ].sort((a, b) => a.localeCompare(b, 'pt-BR'))
 
-  const estiloCampo = {
-    display: 'flex',
-    flexDirection: 'column',
-    gap: '6px',
-    marginBottom: '14px',
-  }
+  const plataformasFiltradas = plataformas
+    .filter((plataforma) => {
+      const nomeCorresponde = (plataforma.nome || '')
+        .toLocaleLowerCase('pt-BR')
+        .includes(filtros.nome.trim().toLocaleLowerCase('pt-BR'))
 
-  const estiloInput = {
-    width: '100%',
-    maxWidth: '100%',
-    boxSizing: 'border-box',
-    padding: '10px',
-  }
+      const fabricanteCorresponde =
+        !filtros.fabricante ||
+        plataforma.fabricante === filtros.fabricante
+
+      const categoriaCorresponde =
+        !filtros.categoria ||
+        plataforma.categoria === filtros.categoria
+
+      const situacaoCorresponde =
+        filtros.situacao === '' ||
+        plataforma.ativo === (filtros.situacao === 'ativa')
+
+      return (
+        nomeCorresponde &&
+        fabricanteCorresponde &&
+        categoriaCorresponde &&
+        situacaoCorresponde
+      )
+    })
+    .sort((a, b) => {
+      switch (filtros.ordenacao) {
+        case 'id-desc':
+          return Number(b.id) - Number(a.id)
+
+        case 'nome-asc':
+          return (a.nome || '').localeCompare(b.nome || '', 'pt-BR')
+
+        case 'nome-desc':
+          return (b.nome || '').localeCompare(a.nome || '', 'pt-BR')
+
+        case 'fabricante-asc':
+          return (a.fabricante || '').localeCompare(
+            b.fabricante || '',
+            'pt-BR'
+          )
+
+        case 'fabricante-desc':
+          return (b.fabricante || '').localeCompare(
+            a.fabricante || '',
+            'pt-BR'
+          )
+
+        case 'ano-asc':
+          return Number(a.anoLancamento || 0) -
+            Number(b.anoLancamento || 0)
+
+        case 'ano-desc':
+          return Number(b.anoLancamento || 0) -
+            Number(a.anoLancamento || 0)
+
+        case 'jogos-asc':
+          return Number(a.quantidadeJogos || 0) -
+            Number(b.quantidadeJogos || 0)
+
+        case 'jogos-desc':
+          return Number(b.quantidadeJogos || 0) -
+            Number(a.quantidadeJogos || 0)
+
+        case 'id-asc':
+        default:
+          return Number(a.id) - Number(b.id)
+      }
+    })
 
   return (
     <main className="container">
@@ -296,8 +410,8 @@ function GerenciarPlataformas() {
               style={estiloInput}
             />
             <small>
-              Informe um ano entre {anoMinimo} e {anoAtual}
-              (ano atual). Deixe vazio se não souber.
+              Informe um ano entre {anoMinimo} e {anoAtual}.
+              Deixe vazio se não souber.
             </small>
           </div>
 
@@ -312,7 +426,7 @@ function GerenciarPlataformas() {
             >
               <option value="">Selecione uma categoria</option>
 
-              {categorias.map((categoria) => (
+              {categoriasDisponiveis.map((categoria) => (
                 <option key={categoria} value={categoria}>
                   {categoria}
                 </option>
@@ -334,19 +448,24 @@ function GerenciarPlataformas() {
             />
           </div>
 
-          {idEdicao !== null && (
-            <div style={{ marginBottom: '14px' }}>
-              <label>
-                <input
-                  type="checkbox"
-                  name="ativo"
-                  checked={formulario.ativo}
-                  onChange={atualizarCampo}
-                />
-                {' '}Plataforma ativa
-              </label>
-            </div>
-          )}
+          <div style={estiloCampo}>
+            <label htmlFor="ativo">Situação *</label>
+            <select
+              id="ativo"
+              name="ativo"
+              value={formulario.ativo ? 'true' : 'false'}
+              onChange={(evento) =>
+                setFormulario((anterior) => ({
+                  ...anterior,
+                  ativo: evento.target.value === 'true',
+                }))
+              }
+              style={estiloInput}
+            >
+              <option value="true">Ativa</option>
+              <option value="false">Inativa</option>
+            </select>
+          </div>
 
           <div
             style={{
@@ -379,74 +498,195 @@ function GerenciarPlataformas() {
 
         <h2>Plataformas cadastradas</h2>
 
+        <div
+          style={{
+            display: 'flex',
+            flexWrap: 'wrap',
+            gap: '14px',
+            margin: '18px 0',
+            padding: '16px',
+            border: '1px solid #ccc',
+            borderRadius: '8px',
+          }}
+        >
+          <div style={estiloFiltro}>
+            <label htmlFor="filtroNome">Buscar por nome</label>
+            <input
+              id="filtroNome"
+              name="nome"
+              type="search"
+              placeholder="Digite o nome da plataforma..."
+              value={filtros.nome}
+              onChange={atualizarFiltro}
+              style={estiloInput}
+            />
+          </div>
+
+          <div style={estiloFiltro}>
+            <label htmlFor="filtroFabricante">Filtrar por fabricante</label>
+            <select
+              id="filtroFabricante"
+              name="fabricante"
+              value={filtros.fabricante}
+              onChange={atualizarFiltro}
+              style={estiloInput}
+            >
+              <option value="">Todos os fabricantes</option>
+              {fabricantes.map((fabricante) => (
+                <option key={fabricante} value={fabricante}>
+                  {fabricante}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          <div style={estiloFiltro}>
+            <label htmlFor="filtroCategoria">Filtrar por categoria</label>
+            <select
+              id="filtroCategoria"
+              name="categoria"
+              value={filtros.categoria}
+              onChange={atualizarFiltro}
+              style={estiloInput}
+            >
+              <option value="">Todas as categorias</option>
+              {categoriasDisponiveis.map((categoria) => (
+                <option key={categoria} value={categoria}>
+                  {categoria}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          <div style={estiloFiltro}>
+            <label htmlFor="filtroSituacao">Filtrar por situação</label>
+            <select
+              id="filtroSituacao"
+              name="situacao"
+              value={filtros.situacao}
+              onChange={atualizarFiltro}
+              style={estiloInput}
+            >
+              <option value="">Todas as situações</option>
+              <option value="ativa">Ativas</option>
+              <option value="inativa">Inativas</option>
+            </select>
+          </div>
+
+          <div style={estiloFiltro}>
+            <label htmlFor="ordenacao">Ordenar resultados</label>
+            <select
+              id="ordenacao"
+              name="ordenacao"
+              value={filtros.ordenacao}
+              onChange={atualizarFiltro}
+              style={estiloInput}
+            >
+              <option value="id-asc">ID: menor para maior</option>
+              <option value="id-desc">ID: maior para menor</option>
+              <option value="nome-asc">Nome: A até Z</option>
+              <option value="nome-desc">Nome: Z até A</option>
+              <option value="fabricante-asc">Fabricante: A até Z</option>
+              <option value="fabricante-desc">Fabricante: Z até A</option>
+              <option value="ano-asc">Ano: mais antigo</option>
+              <option value="ano-desc">Ano: mais recente</option>
+              <option value="jogos-desc">Jogos: maior quantidade</option>
+              <option value="jogos-asc">Jogos: menor quantidade</option>
+            </select>
+          </div>
+
+          <div style={{ display: 'flex', alignItems: 'end' }}>
+            <button type="button" onClick={limparFiltros}>
+              Limpar filtros
+            </button>
+          </div>
+        </div>
+
+        {!carregando && (
+          <p role="status">
+            Exibindo {plataformasFiltradas.length} de {plataformas.length} plataforma(s).
+          </p>
+        )}
+
         {carregando ? (
           <p>Carregando plataformas...</p>
-        ) : plataformas.length === 0 ? (
-          <p>Nenhuma plataforma encontrada.</p>
+        ) : plataformasFiltradas.length === 0 ? (
+          <p>
+            {plataformas.length === 0
+              ? 'Nenhuma plataforma cadastrada.'
+              : 'Nenhuma plataforma corresponde aos filtros selecionados.'}
+          </p>
         ) : (
           <div style={{ width: '100%', overflowX: 'auto' }}>
-            <table style={estiloTabela}>
+            <table
+              style={{
+                width: '100%',
+                minWidth: '1350px',
+                tableLayout: 'fixed',
+                borderCollapse: 'collapse',
+              }}
+            >
               <colgroup>
                 <col style={{ width: '5%' }} />
-                <col style={{ width: '15%' }} />
                 <col style={{ width: '13%' }} />
-                <col style={{ width: '9%' }} />
-                <col style={{ width: '13%' }} />
-                <col style={{ width: '20%' }} />
-                <col style={{ width: '8%' }} />
-                <col style={{ width: '17%' }} />
+                <col style={{ width: '10%' }} />
+                <col style={{ width: '12%' }} />
+                <col style={{ width: '7%' }} />
+                <col style={{ width: '12%' }} />
+                <col style={{ width: '18%' }} />
+                <col style={{ width: '7%' }} />
+                <col style={{ width: '16%' }} />
               </colgroup>
 
               <thead>
                 <tr>
-                  <th style={estiloCelula}>ID</th>
-                  <th style={estiloCelula}>Nome</th>
-                  <th style={estiloCelula}>Fabricante</th>
-                  <th style={estiloCelula}>Ano</th>
-                  <th style={estiloCelula}>Categoria</th>
-                  <th style={estiloCelula}>Outras informações</th>
-                  <th style={estiloCelula}>Status</th>
-                  <th style={estiloCelula}>Ações</th>
+                  {[
+                    'ID',
+                    'Nome',
+                    'Jogos cadastrados',
+                    'Fabricante',
+                    'Ano',
+                    'Categoria',
+                    'Outras informações',
+                    'Situação',
+                    'Ações',
+                  ].map((titulo) => (
+                    <th key={titulo} style={estiloCelula}>
+                      {titulo}
+                    </th>
+                  ))}
                 </tr>
               </thead>
 
               <tbody>
-                {plataformas.map((plataforma) => (
+                {plataformasFiltradas.map((plataforma) => (
                   <tr key={plataforma.id}>
+                    <td style={estiloCelula}>{plataforma.id}</td>
+                    <td style={estiloCelula}>{plataforma.nome}</td>
                     <td style={estiloCelula}>
-                      {plataforma.id}
+                      {plataforma.quantidadeJogos ?? 0}
                     </td>
-
-                    <td style={estiloCelula}>
-                      {plataforma.nome}
-                    </td>
-
                     <td style={estiloCelula}>
                       {exibirValor(plataforma.fabricante)}
                     </td>
-
                     <td style={estiloCelula}>
                       {exibirValor(plataforma.anoLancamento)}
                     </td>
-
                     <td style={estiloCelula}>
                       {exibirValor(plataforma.categoria)}
                     </td>
-
                     <td style={estiloCelula}>
                       {exibirValor(plataforma.descricao)}
                     </td>
-
                     <td style={estiloCelula}>
                       {plataforma.ativo ? 'Ativa' : 'Inativa'}
                     </td>
-
                     <td style={estiloCelula}>
                       <div
                         style={{
                           display: 'flex',
                           flexWrap: 'wrap',
-                          gap: '6px',
+                          gap: '8px',
                         }}
                       >
                         <button
@@ -476,4 +716,3 @@ function GerenciarPlataformas() {
 }
 
 export default GerenciarPlataformas
-

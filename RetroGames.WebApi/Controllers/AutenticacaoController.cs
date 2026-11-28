@@ -1,5 +1,4 @@
-﻿
-using System.Security.Claims;
+﻿using System.Security.Claims;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
@@ -119,6 +118,35 @@ public class AutenticacaoController : ControllerBase
             codigo = 0,
             mensagem = "Usuário autenticado.",
             usuario
+        });
+    }
+
+    [HttpPost("minha-senha")]
+    [Authorize(Policy = "SomenteAdministrador")]
+    public async Task<IActionResult> AlterarMinhaSenha(
+        [FromBody] AlterarMinhaSenhaRequest request)
+    {
+        var idUsuarioTexto = User.FindFirstValue(
+            ClaimTypes.NameIdentifier);
+
+        if (!int.TryParse(idUsuarioTexto, out var idUsuario))
+        {
+            return Unauthorized(new
+            {
+                codigo = 6,
+                mensagem = "Não foi possível identificar o usuário autenticado."
+            });
+        }
+
+        await _autenticacaoService.AlterarMinhaSenhaAsync(
+            idUsuario,
+            request.SenhaAtual,
+            request.NovaSenha);
+
+        return Ok(new
+        {
+            codigo = 0,
+            mensagem = "Senha alterada com sucesso."
         });
     }
 }

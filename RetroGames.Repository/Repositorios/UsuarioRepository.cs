@@ -34,6 +34,27 @@ public class UsuarioRepository
             new { Email = email });
     }
 
+    public async Task<Usuario?> ObterPorIdAsync(int id)
+    {
+        using var conexao = _factory.CreateConnection();
+
+        return await conexao.QuerySingleOrDefaultAsync<Usuario>(
+            """
+            SELECT
+                co_seq_usuario AS Id,
+                no_usuario AS Nome,
+                ds_email AS Email,
+                ds_senha_hash AS SenhaHash,
+                st_ativo AS Ativo,
+                dt_cadastro AS DataCadastro,
+                co_perfil AS IdPerfil
+            FROM tb_usuario
+            WHERE co_seq_usuario = @Id
+            LIMIT 1;
+            """,
+            new { Id = id });
+    }
+
     public async Task<int> InserirAsync(Usuario usuario)
     {
         using var conexao = _factory.CreateConnection();
@@ -48,5 +69,24 @@ public class UsuarioRepository
             SELECT LAST_INSERT_ID();
             """,
             usuario);
+    }
+
+    public async Task<int> AtualizarSenhaAsync(
+        int idUsuario,
+        string senhaHash)
+    {
+        using var conexao = _factory.CreateConnection();
+
+        return await conexao.ExecuteAsync(
+            """
+            UPDATE tb_usuario
+            SET ds_senha_hash = @SenhaHash
+            WHERE co_seq_usuario = @Id;
+            """,
+            new
+            {
+                Id = idUsuario,
+                SenhaHash = senhaHash
+            });
     }
 }

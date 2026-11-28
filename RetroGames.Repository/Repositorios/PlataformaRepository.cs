@@ -1,4 +1,4 @@
-﻿using Dapper;
+using Dapper;
 using RetroGames.Model.Model;
 using RetroGames.Repository.Conexao;
 
@@ -41,7 +41,8 @@ public class PlataformaRepository
                 nu_ano_lancamento AS AnoLancamento,
                 ds_categoria AS Categoria,
                 ds_plataforma AS Descricao,
-                st_ativo AS Ativo
+                st_ativo AS Ativo,
+                (SELECT COUNT(*) FROM tb_jogo j WHERE j.co_plataforma = tb_plataforma.co_seq_plataforma) AS QuantidadeJogos
             FROM tb_plataforma
             ORDER BY no_plataforma;
             """;
@@ -64,7 +65,8 @@ public class PlataformaRepository
                 nu_ano_lancamento AS AnoLancamento,
                 ds_categoria AS Categoria,
                 ds_plataforma AS Descricao,
-                st_ativo AS Ativo
+                st_ativo AS Ativo,
+                (SELECT COUNT(*) FROM tb_jogo j WHERE j.co_plataforma = tb_plataforma.co_seq_plataforma) AS QuantidadeJogos
             FROM tb_plataforma
             WHERE co_seq_plataforma = @Id;
             """;

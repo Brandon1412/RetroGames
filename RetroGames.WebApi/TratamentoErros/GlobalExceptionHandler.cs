@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Diagnostics;
+using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using RetroGames.Services.Excecoes;
 using RetroGames.WebApi.ApiModels.Respostas;
@@ -39,6 +39,16 @@ public class GlobalExceptionHandler : IExceptionHandler
             RelacionamentoNaoEncontradoException =>
                 (StatusCodes.Status404NotFound,
                  ResponseCodes.RELACIONAMENTO_NAO_ENCONTRADO,
+                 exception.Message),
+
+            SenhaAtualIncorretaException =>
+                (StatusCodes.Status400BadRequest,
+                 ResponseCodes.DADOS_INVALIDOS,
+                 exception.Message),
+
+            ArgumentException =>
+                (StatusCodes.Status400BadRequest,
+                 ResponseCodes.DADOS_INVALIDOS,
                  exception.Message),
 
             _ =>

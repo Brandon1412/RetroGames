@@ -1,4 +1,4 @@
-﻿namespace RetroGames.Model.Model;
+namespace RetroGames.Model.Model;
 
 /// <summary>
 /// Representa uma plataforma de videogame.
@@ -18,4 +18,6 @@ public class Plataforma
     public string? Descricao { get; set; }
 
     public bool Ativo { get; set; } = true;
+
+    public int QuantidadeJogos { get; set; }
 }
