@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using RetroGames.Model.Model;
 using RetroGames.Repository.Conexao;
+using RetroGames.Repository.Interfaces;
 using RetroGames.Repository.Repositorios;
 using RetroGames.Services.Interfaces;
 using RetroGames.Services.Servicos;
@@ -26,15 +27,23 @@ builder.Services.AddSingleton(
     new MySqlConnectionFactory(connectionString));
 
 builder.Services.AddScoped<PlataformaRepository>();
+builder.Services.AddScoped<IPlataformaRepository>(sp =>
+    sp.GetRequiredService<PlataformaRepository>());
 builder.Services.AddScoped<PlataformaService>();
 
 builder.Services.AddScoped<JogoRepository>();
+builder.Services.AddScoped<IJogoRepository>(sp =>
+    sp.GetRequiredService<JogoRepository>());
 builder.Services.AddScoped<JogoService>();
 
 builder.Services.AddScoped<GeneroRepository>();
+builder.Services.AddScoped<IGeneroRepository>(sp =>
+    sp.GetRequiredService<GeneroRepository>());
 builder.Services.AddScoped<GeneroService>();
 
 builder.Services.AddScoped<CondicaoJogoRepository>();
+builder.Services.AddScoped<ICondicaoJogoRepository>(sp =>
+    sp.GetRequiredService<CondicaoJogoRepository>());
 builder.Services.AddScoped<CondicaoJogoService>();
 
 builder.Services.AddScoped<UsuarioRepository>();

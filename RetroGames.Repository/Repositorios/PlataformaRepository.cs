@@ -1,10 +1,11 @@
 using Dapper;
 using RetroGames.Model.Model;
 using RetroGames.Repository.Conexao;
+using RetroGames.Repository.Interfaces;
 
 namespace RetroGames.Repository.Repositorios;
 
-public class PlataformaRepository
+public class PlataformaRepository : IPlataformaRepository
 {
     private readonly MySqlConnectionFactory _connectionFactory;
 
@@ -13,7 +14,7 @@ public class PlataformaRepository
         _connectionFactory = connectionFactory;
     }
 
-    // Verifica se existem jogos vinculados à plataforma.
+// Verifica se existem jogos vinculados a plataforma.
     public async Task<bool> PossuiJogosAsync(int idPlataforma)
     {
         const string sql = """

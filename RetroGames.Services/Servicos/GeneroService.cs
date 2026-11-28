@@ -1,13 +1,13 @@
 ﻿using RetroGames.Model.Model;
-using RetroGames.Repository.Repositorios;
+using RetroGames.Repository.Interfaces;
 
 namespace RetroGames.Services.Servicos;
 
 public class GeneroService
 {
-    private readonly GeneroRepository _repository;
+    private readonly IGeneroRepository _repository;
 
-    public GeneroService(GeneroRepository repository)
+    public GeneroService(IGeneroRepository repository)
     {
         _repository = repository;
     }

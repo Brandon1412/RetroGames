@@ -1,14 +1,15 @@
-﻿using RetroGames.Model.Model;
-using RetroGames.Repository.Repositorios;
+﻿
+using RetroGames.Model.Model;
+using RetroGames.Repository.Interfaces;
 using RetroGames.Services.Excecoes;
 
 namespace RetroGames.Services.Servicos;
 
 public class JogoService
 {
-    private readonly JogoRepository _repository;
+    private readonly IJogoRepository _repository;
 
-    public JogoService(JogoRepository repository)
+    public JogoService(IJogoRepository repository)
     {
         _repository = repository;
     }
@@ -32,7 +33,9 @@ public class JogoService
     public async Task<int> InserirAsync(Jogo jogo)
     {
         await ValidarRelacionamentosAsync(jogo);
+
         jogo.Ativo = true;
+
         return await _repository.InserirAsync(jogo);
     }
 
@@ -45,6 +48,7 @@ public class JogoService
                 $"O jogo com ID {jogo.Id} nao foi encontrado.");
 
         await ValidarRelacionamentosAsync(jogo);
+
         await _repository.AlterarAsync(jogo);
     }
 

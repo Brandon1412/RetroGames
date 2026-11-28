@@ -1,10 +1,12 @@
-﻿using Dapper;
+﻿
+using Dapper;
 using RetroGames.Model.Model;
 using RetroGames.Repository.Conexao;
+using RetroGames.Repository.Interfaces;
 
 namespace RetroGames.Repository.Repositorios;
 
-public class JogoRepository
+public class JogoRepository : IJogoRepository
 {
     private readonly MySqlConnectionFactory _connectionFactory;
 

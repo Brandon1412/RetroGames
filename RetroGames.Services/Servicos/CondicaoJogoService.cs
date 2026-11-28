@@ -1,13 +1,13 @@
 ﻿using RetroGames.Model.Model;
-using RetroGames.Repository.Repositorios;
+using RetroGames.Repository.Interfaces;
 
 namespace RetroGames.Services.Servicos;
 
 public class CondicaoJogoService
 {
-    private readonly CondicaoJogoRepository _repository;
+    private readonly ICondicaoJogoRepository _repository;
 
-    public CondicaoJogoService(CondicaoJogoRepository repository)
+    public CondicaoJogoService(ICondicaoJogoRepository repository)
     {
         _repository = repository;
     }
