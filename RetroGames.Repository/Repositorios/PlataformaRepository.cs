@@ -1,5 +1,4 @@
-
-using Dapper;
+﻿using Dapper;
 using RetroGames.Model.Model;
 using RetroGames.Repository.Conexao;
 
@@ -38,6 +37,9 @@ public class PlataformaRepository
             SELECT
                 co_seq_plataforma AS Id,
                 no_plataforma AS Nome,
+                no_fabricante AS Fabricante,
+                nu_ano_lancamento AS AnoLancamento,
+                ds_categoria AS Categoria,
                 ds_plataforma AS Descricao,
                 st_ativo AS Ativo
             FROM tb_plataforma
@@ -58,6 +60,9 @@ public class PlataformaRepository
             SELECT
                 co_seq_plataforma AS Id,
                 no_plataforma AS Nome,
+                no_fabricante AS Fabricante,
+                nu_ano_lancamento AS AnoLancamento,
+                ds_categoria AS Categoria,
                 ds_plataforma AS Descricao,
                 st_ativo AS Ativo
             FROM tb_plataforma
@@ -75,14 +80,37 @@ public class PlataformaRepository
     {
         const string sql = """
             INSERT INTO tb_plataforma
-                (no_plataforma, ds_plataforma, st_ativo)
+                (
+                    no_plataforma,
+                    no_fabricante,
+                    nu_ano_lancamento,
+                    ds_categoria,
+                    ds_plataforma,
+                    st_ativo
+                )
             VALUES
-                (@Nome, @Descricao, @Ativo);
+                (
+                    @Nome,
+                    @Fabricante,
+                    @AnoLancamento,
+                    @Categoria,
+                    @Descricao,
+                    @Ativo
+                );
             """;
 
         using var conexao = _connectionFactory.CreateConnection();
 
-        await conexao.ExecuteAsync(sql, plataforma);
+        await conexao.OpenAsync();
+        await conexao.ExecuteAsync(sql, new
+        {
+            plataforma.Nome,
+            plataforma.Fabricante,
+            plataforma.AnoLancamento,
+            plataforma.Categoria,
+            Descricao = plataforma.Descricao ?? string.Empty,
+            plataforma.Ativo
+        });
 
         return await conexao.ExecuteScalarAsync<int>(
             "SELECT LAST_INSERT_ID();");
@@ -95,6 +123,9 @@ public class PlataformaRepository
             UPDATE tb_plataforma
             SET
                 no_plataforma = @Nome,
+                no_fabricante = @Fabricante,
+                nu_ano_lancamento = @AnoLancamento,
+                ds_categoria = @Categoria,
                 ds_plataforma = @Descricao,
                 st_ativo = @Ativo
             WHERE co_seq_plataforma = @Id;
@@ -102,7 +133,16 @@ public class PlataformaRepository
 
         using var conexao = _connectionFactory.CreateConnection();
 
-        var linhasAfetadas = await conexao.ExecuteAsync(sql, plataforma);
+        var linhasAfetadas = await conexao.ExecuteAsync(sql, new
+        {
+            plataforma.Id,
+            plataforma.Nome,
+            plataforma.Fabricante,
+            plataforma.AnoLancamento,
+            plataforma.Categoria,
+            Descricao = plataforma.Descricao ?? string.Empty,
+            plataforma.Ativo
+        });
 
         return linhasAfetadas > 0;
     }

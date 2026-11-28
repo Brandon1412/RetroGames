@@ -1,18 +1,21 @@
+﻿namespace RetroGames.Model.Model;
 
-namespace RetroGames.Model.Model;
-
-/// <summary>Tabela tb_plataforma.</summary>
+/// <summary>
+/// Representa uma plataforma de videogame.
+/// </summary>
 public class Plataforma
 {
-    /// <summary>Coluna co_seq_plataforma.</summary>
     public int Id { get; set; }
 
-    /// <summary>Coluna no_plataforma.</summary>
     public string Nome { get; set; } = string.Empty;
 
-    /// <summary>Coluna ds_plataforma.</summary>
-    public string Descricao { get; set; } = string.Empty;
+    public string? Fabricante { get; set; }
 
-    /// <summary>Coluna st_ativo.</summary>
+    public int? AnoLancamento { get; set; }
+
+    public string? Categoria { get; set; }
+
+    public string? Descricao { get; set; }
+
     public bool Ativo { get; set; } = true;
 }

@@ -21,6 +21,7 @@
   <ItemGroup>
     <ProjectReference Include="..\RetroGames.Services\RetroGames.Services.csproj" />
     <ProjectReference Include="..\RetroGames.Model\RetroGames.Model.csproj" />
+    <ProjectReference Include="..\RetroGames.WebApi\RetroGames.WebApi.csproj" />
   </ItemGroup>
 
 </Project>

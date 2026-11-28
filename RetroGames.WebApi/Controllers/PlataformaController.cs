@@ -1,5 +1,4 @@
-
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using RetroGames.Model.Model;
 using RetroGames.Services.Servicos;
@@ -26,13 +25,7 @@ public class PlataformaController : ControllerBase
     {
         var plataformas = await _plataformaService.ListarAsync();
 
-        var resposta = plataformas.Select(p => new PlataformaResponse
-        {
-            Id = p.Id,
-            Nome = p.Nome,
-            Descricao = p.Descricao,
-            Ativo = p.Ativo
-        }).ToList();
+        var resposta = plataformas.Select(ConverterParaResponse).ToList();
 
         return Ok(ApiResponse<List<PlataformaResponse>>.Sucesso(
             resposta,
@@ -45,10 +38,9 @@ public class PlataformaController : ControllerBase
     public async Task<IActionResult> ObterPorId(int id)
     {
         var plataforma = await _plataformaService.ObterPorIdAsync(id);
-        var resposta = ConverterParaResponse(plataforma);
 
         return Ok(ApiResponse<PlataformaResponse>.Sucesso(
-            resposta,
+            ConverterParaResponse(plataforma),
             "Plataforma consultada com sucesso."));
     }
 
@@ -60,7 +52,10 @@ public class PlataformaController : ControllerBase
     {
         var plataforma = new Plataforma
         {
-            Nome = request.Nome,
+            Nome = request.Nome.Trim(),
+            Fabricante = request.Fabricante,
+            AnoLancamento = request.AnoLancamento,
+            Categoria = request.Categoria,
             Descricao = request.Descricao,
             Ativo = true
         };
@@ -88,12 +83,16 @@ public class PlataformaController : ControllerBase
         var plataforma = new Plataforma
         {
             Id = id,
-            Nome = request.Nome,
+            Nome = request.Nome.Trim(),
+            Fabricante = request.Fabricante,
+            AnoLancamento = request.AnoLancamento,
+            Categoria = request.Categoria,
             Descricao = request.Descricao,
             Ativo = request.Ativo
         };
 
         await _plataformaService.AlterarAsync(plataforma);
+
         var atualizada = await _plataformaService.ObterPorIdAsync(id);
 
         return Ok(ApiResponse<PlataformaResponse>.Sucesso(
@@ -120,6 +119,9 @@ public class PlataformaController : ControllerBase
         {
             Id = plataforma.Id,
             Nome = plataforma.Nome,
+            Fabricante = plataforma.Fabricante,
+            AnoLancamento = plataforma.AnoLancamento,
+            Categoria = plataforma.Categoria,
             Descricao = plataforma.Descricao,
             Ativo = plataforma.Ativo
         };

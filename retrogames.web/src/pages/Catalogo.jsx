@@ -156,10 +156,10 @@ function Catalogo() {
   const paginaAtual = Math.min(paginaSolicitada, totalPaginas)
 
   useEffect(() => {
-    if (paginaSolicitada > totalPaginas) {
+    if (!carregando && paginaSolicitada > totalPaginas) {
       atualizarParametro('pagina', String(totalPaginas))
     }
-  }, [paginaSolicitada, totalPaginas])
+  }, [carregando, paginaSolicitada, totalPaginas])
 
   const jogosDaPagina = useMemo(() => {
     const inicio = (paginaAtual - 1) * JOGOS_POR_PAGINA

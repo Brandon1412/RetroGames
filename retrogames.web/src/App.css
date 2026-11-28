@@ -1,4 +1,4 @@
-
+﻿
 .site {
   min-height: 100vh;
 }
@@ -576,7 +576,7 @@
   }
 }
 
-/* FILTROS DO CATÁLOGO */
+/* FILTROS DO CAT├üLOGO */
 
 .filtros-catalogo {
   display: flex;
@@ -647,7 +647,7 @@
   color: #15151e;
 }
 
-/* PAGINAÇÃO */
+/* PAGINA├ç├âO */
 
 .paginacao {
   display: flex;
@@ -720,7 +720,7 @@
   }
 }
 
-/* Página de detalhes do jogo */
+/* P├ígina de detalhes do jogo */
 
 .detalhe-pagina {
   min-height: 75vh;
@@ -910,5 +910,160 @@
   .detalhe-compra {
     align-items: flex-start;
     flex-direction: column;
+  }
+}
+
+/* ==========================
+   TELA DE LOGIN
+========================== */
+
+.login-pagina {
+  min-height: 75vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 60px 20px;
+  background:
+    radial-gradient(circle at top, #25243b 0%, #10101b 65%);
+}
+
+.login-container {
+  width: 100%;
+  max-width: 460px;
+}
+
+.login-voltar {
+  display: inline-block;
+  margin-bottom: 22px;
+  color: #b7f34b;
+  text-decoration: none;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 1px;
+}
+
+.login-voltar:hover {
+  color: #d0ff80;
+}
+
+.login-card {
+  padding: 38px;
+  background: #1d1c2b;
+  border: 1px solid #35334a;
+  border-radius: 14px;
+  box-shadow: 0 18px 50px rgba(0, 0, 0, 0.3);
+}
+
+.login-icone {
+  width: 54px;
+  height: 54px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 22px;
+  border-radius: 12px;
+  background: rgba(183, 243, 75, 0.12);
+  color: #b7f34b;
+  font-size: 28px;
+}
+
+.login-etiqueta {
+  color: #b7f34b;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 2px;
+}
+
+.login-card h1 {
+  margin: 12px 0;
+  color: #fff;
+  font-size: 30px;
+}
+
+.login-descricao {
+  margin-bottom: 30px;
+  color: #aaa8bd;
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.login-campo {
+  margin-bottom: 20px;
+}
+
+.login-campo label {
+  display: block;
+  margin-bottom: 9px;
+  color: #d8d6e5;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 1px;
+}
+
+.login-campo input {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 14px;
+  border: 1px solid #39374e;
+  border-radius: 7px;
+  outline: none;
+  background: #141420;
+  color: #fff;
+  font-size: 14px;
+}
+
+.login-campo input:focus {
+  border-color: #b7f34b;
+}
+
+.login-erro {
+  margin-bottom: 18px;
+  padding: 12px;
+  border: 1px solid #8d3434;
+  border-radius: 7px;
+  background: rgba(180, 50, 50, 0.12);
+  color: #ff9292;
+  font-size: 13px;
+}
+
+.login-botao {
+  width: 100%;
+  padding: 15px;
+  border: none;
+  border-radius: 7px;
+  background: #b7f34b;
+  color: #171720;
+  font-size: 13px;
+  font-weight: 900;
+  letter-spacing: 1px;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.login-botao:hover {
+  background: #d0ff80;
+  transform: translateY(-2px);
+}
+
+.login-botao:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.login-aviso {
+  margin: 22px 0 0;
+  color: #858397;
+  font-size: 12px;
+  text-align: center;
+}
+
+@media (max-width: 480px) {
+  .login-card {
+    padding: 26px 20px;
+  }
+
+  .login-card h1 {
+    font-size: 25px;
   }
 }
